@@ -1,11 +1,11 @@
 package ba.unsa.etf.rs.tutorijal9.tutorijal8;
 
+import javafx.beans.property.SimpleStringProperty;
 import org.sqlite.JDBC;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.*;
-import java.sql.Driver;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -20,7 +20,7 @@ public class TransportDAO {
 
 
     private static TransportDAO instance;
-    private java.sql.Driver driver;
+    private Driver driver;
     static {
         try {
             DriverManager.registerDriver(new JDBC());
@@ -67,6 +67,7 @@ public class TransportDAO {
             e.printStackTrace();
         }
     }
+    //Rjesavamo slucaj ukoliko baza nije kreirana!
     public void regenerisiBazu() {
         Scanner ulaz = null;
         try {
@@ -106,7 +107,7 @@ public class TransportDAO {
         return java.sql.Date.valueOf(dateToConvert);
     }
 
-    public void addDriver(java.sql.Driver driver){
+    public void addDriver(Driver driver){
         try {
             ResultSet rs = odrediIdDriveraUpit.executeQuery();
             int id = 1;
@@ -142,12 +143,12 @@ public class TransportDAO {
         }
     }
 
-    public ArrayList<java.sql.Driver> getDrivers() {
-        ArrayList<java.sql.Driver> drivers = new ArrayList<java.sql.Driver>();
+    public ArrayList<Driver> getDrivers() {
+        ArrayList<Driver> drivers = new ArrayList<Driver>();
         ResultSet result = null;
         try {
             result = dajVozaceUpit.executeQuery();
-            java.sql.Driver driver;
+            Driver driver;
             while (  ( driver = dajVozaceUpit(result) ) != null )
                 drivers.add(driver);
             result.close();
@@ -175,8 +176,8 @@ public class TransportDAO {
     public LocalDate convertToLocalDateViaSqlDate(Date dateToConvert) {
         return new java.sql.Date(dateToConvert.getTime()).toLocalDate();
     }
-    private java.sql.Driver dajVozaceUpit(ResultSet result) {
-        java.sql.Driver driver = null;
+    private Driver dajVozaceUpit(ResultSet result) {
+        Driver driver = null;
         try {
             if (result.next() ){
                 int id = result.getInt("vozac_id");
@@ -186,7 +187,7 @@ public class TransportDAO {
                 LocalDate rodjendan = result.getDate("datum_rodjenja").toLocalDate();
                 LocalDate datum_zap = result.getDate("datum_zaposljenja").toLocalDate();
 
-                driver = new java.sql.Driver( name , surname , jmb , rodjendan , datum_zap);
+                driver = new Driver( name , surname , jmb , rodjendan , datum_zap);
                 driver.setId(id);
             }
         } catch (SQLException e) {
@@ -204,7 +205,6 @@ public class TransportDAO {
                 String proizvodjac = result.getString("proizvodjac");
                 String serija = result.getString("serija");
                 int brojSjedista = result.getInt("broj_sjedista");
-                // getDodjelaVozaci.setInt(1,id);
 
                 bus = new Bus( proizvodjac , serija , brojSjedista);
                 bus.setId(id);
@@ -216,7 +216,7 @@ public class TransportDAO {
         return bus;
     }
 
-    public void izmijeniDrivera (java.sql.Driver driver) {
+    public void izmijeniDrivera (Driver driver) {
         try {
             driverById.clearParameters();
             driverById.setInt(1,driver.getId());
