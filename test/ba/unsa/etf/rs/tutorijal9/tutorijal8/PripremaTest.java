@@ -1,4 +1,4 @@
-package ba.unsa.etf.rs.tutorijal8;
+package ba.unsa.etf.rs.tutorijal9.tutorijal8;
 
 
 import org.junit.jupiter.api.*;
